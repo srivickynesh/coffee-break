@@ -13,5 +13,6 @@ jobs:
       - name: GitHub Sync to Upstream Repository
         uses: dabreadman/sync-upstream-repo@v1.3.0
         with: 
-          upstream_repo: https://github.com/srivickynesh/infra-deployments.git
+          upstream_repo: https://github.com/redhat-appstudio/integration-service.git
           upstream_branch: main
+          token: ${{ secrets.WORKFLOW_TOKEN }}
