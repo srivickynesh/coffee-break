@@ -1,0 +1,39 @@
+name: Send Slack Message and Update last_week.txt
+
+on: 
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: 
+      image: golang:1.19
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v3
+      with:
+        repository: 'srivickynesh/coffee-break'
+
+    - name: Setup Go environment
+      uses: actions/setup-go@v4
+
+    - name: Run Test and Send Slack Message
+      run: go run coffee.go
+      env:
+        SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
+        HACBS_CHANNEL_ID: ${{ secrets.HACBS_CHANNEL_ID }}
+
+    - name: Commit and push if it's not a Pull Request
+      run: |
+        git config --global --add safe.directory /__w/coffee-break/coffee-break
+        git config user.name "GitHub Action"
+        git config user.email "action@github.com"
+        git add last_week.txt
+        git commit -m "Update last_week.txt"
+
+    - name: Push changes
+      uses: ad-m/github-push-action@v0.6.0
+      with:
+        github_token: ${{ secrets.TOKEN_GITHUB }}
